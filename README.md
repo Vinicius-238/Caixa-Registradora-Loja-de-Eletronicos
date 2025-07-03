@@ -1,1 +1,1 @@
-# Caixa-Registradora-Loja-de-Eletronicos
+# Caixa Registradora | Loja de Eletronicos
