@@ -1,0 +1,185 @@
+<!DOCTYPE html> <!-- Define o tipo de documento como HTML5 -->
+<html lang="pt-br"> <!-- Define o idioma do documento como português do Brasil -->
+<head>
+  <!-- Define a codificação de caracteres como UTF-8, garantindo suporte a caracteres especiais -->
+  <meta charset="UTF-8">
+  <!-- Define o título da página exibido na aba do navegador -->
+  <title>Caixa Registradora - Loja de Eletrônicos</title> 
+  <style>
+    body {
+  font-family: Arial, sans-serif; /* Define a fonte do texto como Arial e usa sans-serif como alternativa */
+  background: #f2f2f2; /* Define a cor de fundo da página */
+  margin: 0; /* Remove margens externas padrão do body */
+  padding: 20px; /* Adiciona um espaçamento interno ao body */
+}
+
+h1 {
+  text-align: center; /* Centraliza o texto do título */
+  color: #333; /* Define a cor do texto para um tom escuro */
+}
+
+.container {
+  display: flex; /* Usa o modelo flexbox para alinhar elementos */
+  flex-wrap: wrap; /* Permite que os elementos sejam quebrados em múltiplas linhas se necessário */
+  gap: 20px; /* Define um espaçamento entre os elementos */
+  justify-content: center; /* Centraliza os elementos filhos dentro do container */
+}
+
+.product {
+  background: white; /* Define o fundo do produto como branco */
+  border: 1px solid #ccc; /* Adiciona uma borda cinza clara */
+  border-radius: 8px; /* Arredonda as bordas do elemento */
+  padding: 15px; /* Adiciona espaçamento interno */
+  width: 180px; /* Define a largura do produto */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Adiciona uma sombra suave ao redor do produto */
+  text-align: center; /* Centraliza o texto dentro do produto */
+}
+
+.product h3 {
+  margin: 10px 0; /* Adiciona espaçamento ao redor do título do produto */
+}
+
+button {
+  background: #007bff; /* Define a cor de fundo do botão */
+  color: white; /* Define a cor do texto como branco */
+  border: none; /* Remove a borda do botão */
+  padding: 8px 12px; /* Adiciona espaçamento interno */
+  border-radius: 4px; /* Arredonda as bordas do botão */
+  cursor: pointer; /* Define o cursor como ponteiro ao passar sobre o botão */
+}
+
+button:hover {
+  background: #0056b3; /* Altera a cor de fundo do botão ao passar o mouse */
+}
+
+#cart {
+  margin-top: 30px; /* Adiciona um espaçamento acima do carrinho */
+  background: #fff; /* Define o fundo como branco */
+  padding: 20px; /* Adiciona espaçamento interno */
+  border-radius: 8px; /* Arredonda as bordas do carrinho */
+  max-width: 600px; /* Define a largura máxima */
+  margin-left: auto; /* Centraliza o carrinho horizontalmente */
+  margin-right: auto;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Adiciona uma sombra suave */
+}
+
+#cart ul {
+  list-style: none; /* Remove os estilos padrão da lista */
+  padding: 0; /* Remove o espaçamento interno padrão */
+}
+
+#cart li {
+  margin-bottom: 10px; /* Adiciona espaçamento entre os itens do carrinho */
+  display: flex; /* Usa flexbox para alinhar os itens */
+  justify-content: space-between; /* Distribui os itens igualmente */
+}
+
+#total {
+  font-weight: bold; /* Torna o texto do total em negrito */
+  margin-top: 20px; /* Adiciona espaçamento acima do total */
+}
+  </style>
+</head>
+<body> <!-- Início do corpo da página -->
+
+  <h1>Caixa Registradora - Loja de Eletrônicos</h1> <!-- Título principal da página -->
+
+  <div class="container" id="products"></div> <!-- Div que conterá os produtos disponíveis -->
+
+  <div id="cart"> <!-- Seção do carrinho de compras -->
+    <h2>Carrinho</h2> <!-- Título da seção do carrinho -->
+    <ul id="cartItems"></ul> <!-- Lista onde os itens adicionados ao carrinho serão exibidos -->
+    <p id="total">Total: R$ 0,00</p> <!-- Parágrafo exibindo o valor total da compra -->
+    <button onclick="finalizarCompra()">Finalizar Venda</button> <!-- Botão para concluir a compra -->
+  </div>
+
+</body> <!-- Fim do corpo da página -->
+
+  <script>
+ // Array de produtos disponíveis na loja
+const produtos = [
+  { id: 1, nome: "Smartphone", preco: 1999.99 },
+  { id: 2, nome: "Notebook", preco: 3499.99 },
+  { id: 3, nome: "Fones de Ouvido", preco: 249.99 },
+  { id: 4, nome: "Monitor", preco: 999.99 },
+  { id: 5, nome: "Teclado", preco: 200.00 },
+  { id: 6, nome: "Mouse", preco: 50.00 },
+  { id: 7, nome: "Placa-mãe", preco: 700.00 }
+];
+
+// Seleciona a div onde os produtos serão exibidos
+const productsContainer = document.getElementById("products");
+
+// Seleciona os elementos do carrinho
+const cartItems = document.getElementById("cartItems");
+const totalElement = document.getElementById("total");
+
+// Variável para armazenar os itens do carrinho
+let carrinho = [];
+
+// Função para exibir os produtos na página
+function exibirProdutos() {
+  produtos.forEach(produto => {
+    // Cria um elemento div para cada produto
+    const productElement = document.createElement("div");
+    productElement.classList.add("product");
+
+    // Cria elementos para nome, preço e botão de adicionar ao carrinho
+    productElement.innerHTML = `
+      <h3>${produto.nome}</h3>
+      <p>R$ ${produto.preco.toFixed(2)}</p>
+      <button onclick="adicionarAoCarrinho(${produto.id})">Adicionar ao Carrinho</button>
+    `;
+
+    // Adiciona o produto à div container
+    productsContainer.appendChild(productElement);
+  });
+}
+
+// Função para adicionar um produto ao carrinho
+function adicionarAoCarrinho(id) {
+  // Busca o produto correspondente no array
+  const produto = produtos.find(produto => produto.id === id);
+
+  // Adiciona o produto ao carrinho
+  carrinho.push(produto);
+
+  // Atualiza a exibição do carrinho
+  atualizarCarrinho();
+}
+
+// Função para atualizar a exibição do carrinho
+function atualizarCarrinho() {
+  // Limpa a lista de itens
+  cartItems.innerHTML = "";
+
+  // Exibe os itens no carrinho
+  carrinho.forEach(produto => {
+    const itemElement = document.createElement("li");
+    itemElement.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)}`;
+    cartItems.appendChild(itemElement);
+  });
+
+  // Calcula o total da compra
+  const total = carrinho.reduce((acc, produto) => acc + produto.preco, 0);
+  totalElement.textContent = `Total: R$ ${total.toFixed(2)}`;
+}
+
+// Função para finalizar a compra
+function finalizarCompra() {
+  if (carrinho.length === 0) {
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+
+  alert("Compra finalizada! Obrigado por comprar conosco.");
+  // Limpa o carrinho
+  carrinho = [];
+  atualizarCarrinho();
+}
+
+// Chama a função para exibir os produtos ao carregar a página
+window.onload = exibirProdutos;
+  </script>
+</body>
+</html>
